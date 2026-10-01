@@ -6,6 +6,7 @@ Tally is a complete What Framework starter for a freelance invoice workspace. It
 
 - Node.js 22.x
 - npm 10+ (bundled with current Node 22 releases)
+- After `npm ci`, install Playwright Chromium for browser verification: `npx playwright install chromium`
 - Vura Platform credentials for deployment
 
 ## Run it
@@ -32,6 +33,7 @@ npm run test:browser
 ```
 
 `npm run verify` runs all three. Browser tests save screenshots under `test-results/screenshots`.
+On minimal Linux CI images that do not already include browser system libraries, use `npx playwright install --with-deps chromium` instead.
 
 ## Reset local state
 
