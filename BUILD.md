@@ -24,6 +24,14 @@ The state module validates stored JSON before using it. If a browser has malform
 
 Routes live in `src/routes.js` rather than a file-router so this starter is easy to copy into any Vite project. Detail routes use `/clients/:id`, `/invoices/:id`, and `/receipt/:id`; unknown routes render `NotFound`.
 
+## Vura static deployment notes
+
+Tally is a pure Vite/What client app, so it relies on concrete HTML aliases and Vura's static manifest synthesis instead of writing a manual `dist/manifest.json`.
+
+The config is intentionally small: no unsupported top-level `rewrites`, no Vura server runtime dependency, and header sources use `(.*)` rather than glob `*`. Those rules come from Vura Platform's shared config parser in `vura-platform/packages/shared/src/config/vura-config.ts` and matcher validation in `routing-rules.ts`.
+
+After removing the unused `@celsian/vura-core` path, the Vura CLI archive check packs Tally at about 22.0 KiB while preserving every generated detail route.
+
 ## Issues encountered
 
 - Editable number inputs can briefly contain partial values, so calculations use `finiteMoney` to avoid `NaN` or negative totals.
@@ -37,6 +45,7 @@ Routes live in `src/routes.js` rather than a file-router so this starter is easy
 - Problem: invoice math must never leak `NaN` while a user edits a number field. Fix: `finiteMoney()` clamps non-finite and negative values before subtotal/tax/total calculations. Proof: Vitest covers finite calculations and Playwright edits a line to verify the new total.
 - Problem: direct client, invoice, and receipt paths need real files on static hosting. Fix: route aliases are generated from the bundled client/invoice fixtures. Proof: `npm run build` prints `static aliases OK: 13 routes plus 404` and Playwright opens every generated detail route.
 - Problem: storage may be denied. Fix: persistence catches write errors and keeps the edited draft alive for the current session. Proof: the browser suite forces storage writes to throw and still verifies edited totals.
+- Problem: manual static manifests and invalid config fields can push a client-only starter down the wrong Vura upload path. Fix: omit manual manifests, keep valid `(.*)` matchers, and let Vura synthesize static routing from files. Proof: `parseVuraJson()` accepts the config, no `dist/manifest.json` remains after build, and the Vura CLI archive is about 22.0 KiB.
 
 ## Verification
 

@@ -18,7 +18,6 @@
     "deploy:vura:prod": "npm run build && vura-platform deploy --prod"
   },
   "dependencies": {
-    "@celsian/vura-core": "0.8.3",
     "what-framework": "0.13.10"
   },
   "devDependencies": {

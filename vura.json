@@ -7,7 +7,7 @@
       }
     },
     {
-      "source": "/clients/*",
+      "source": "/clients/(.*)",
       "headers": {
         "Cache-Control": "private, no-store"
       }
@@ -19,7 +19,7 @@
       }
     },
     {
-      "source": "/receipt/*",
+      "source": "/receipt/(.*)",
       "headers": {
         "Cache-Control": "private, no-store"
       }
@@ -29,12 +29,6 @@
       "headers": {
         "Cache-Control": "public, max-age=600"
       }
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/404",
-      "destination": "/404.html"
     }
   ]
 }
