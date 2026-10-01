@@ -1,0 +1,40 @@
+{
+  "headers": [
+    {
+      "source": "/",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "source": "/clients/*",
+      "headers": {
+        "Cache-Control": "private, no-store"
+      }
+    },
+    {
+      "source": "/drafts",
+      "headers": {
+        "Cache-Control": "private, no-store"
+      }
+    },
+    {
+      "source": "/receipt/*",
+      "headers": {
+        "Cache-Control": "private, no-store"
+      }
+    },
+    {
+      "source": "/build",
+      "headers": {
+        "Cache-Control": "public, max-age=600"
+      }
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/404",
+      "destination": "/404.html"
+    }
+  ]
+}
