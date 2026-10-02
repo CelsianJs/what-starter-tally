@@ -51,6 +51,7 @@
 - Keyboard editing contract: invoice line inputs must keep the same focused DOM node through select-all/backspace/type edits, including after a new line is added
 - Contrast/readability: dark graphite on off-white, mint focus treatment with text contrast
 - Screen-reader semantics: one `h1` per route, labelled quantity/unit inputs, visible column headers with screen-reader-only row labels, named totals region
+- Responsive editor labels: desktop uses one header row; mobile hides that header and makes each row's Description, Qty, Unit price, and Line total labels visible in normal flow
 - Reduced motion and sensory considerations: `prefers-reduced-motion` disables animations and transitions
 
 ## Responsive behavior
@@ -76,6 +77,7 @@
 - Design-token constraints: CSS custom properties in `src/styles.css`
 - Performance constraints: small static data, computed totals, no external assets or runtime network
 - State/list constraints: invoice line updates are immutable, so editable line rows use keyed What `<For>` accessors to preserve input DOM identity while row data changes
+- Layout constraints: invoice editor rows use a fixed line-total track so currency width does not shift quantity or unit-price columns between rows
 - Compatibility constraints: modern browsers supported by Vite output and What router
 - Test/screenshot expectations: Vitest calculation tests plus Playwright desktop/mobile flows, direct routes, storage-denied behavior, export, 404, and screenshots
 

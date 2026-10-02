@@ -60,10 +60,10 @@ export default function InvoiceDetail() {
               </label>
               <label>
                 <span class="sr-only">Unit price</span>
-                <input aria-label={`${line().description} unit price`} type="number" min="0" step="1" value={line().unitPrice} onInput={(event) => updateLine(invoice().id, line().id, { unitPrice: event.target.value })} />
-              </label>
-              <strong>{() => currency(Number(line().quantity) * Number(line().unitPrice))}</strong>
-            </article>
+              <input aria-label={`${line().description} unit price`} type="number" min="0" step="1" value={line().unitPrice} onInput={(event) => updateLine(invoice().id, line().id, { unitPrice: event.target.value })} />
+            </label>
+            <strong><span class="sr-only">Line total</span>{() => currency(Number(line().quantity) * Number(line().unitPrice))}</strong>
+          </article>
           )}
         </For>
       </div>

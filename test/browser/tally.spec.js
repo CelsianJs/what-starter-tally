@@ -27,7 +27,11 @@ test('edits a draft, saves it, exports JSON, opens receipt, and screenshots', as
   await page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'Drafts', exact: true }).click();
   await page.getByRole('link', { name: 'October launch system' }).click();
   await expect(page.locator('.action-row').getByRole('link', { name: 'Receipt view' })).toBeVisible();
-  await expect(page.locator('.line-header').getByText('Line total')).toBeVisible();
+  if (page.viewportSize().width <= 760) {
+    await expect(page.locator('article.line-row').first().getByText('Line total')).toBeVisible();
+  } else {
+    await expect(page.locator('.line-header').getByText('Line total')).toBeVisible();
+  }
   await page.getByLabel('Landing page production quantity').fill('4');
   await expect(page.getByText('Total $4,502.75')).toBeVisible();
   await page.getByRole('button', { name: 'Save draft' }).click();
@@ -107,6 +111,36 @@ test('invoice line editing preserves focus and DOM identity during continuous ty
   const newRow = page.locator('.line-row').last();
   await replaceWithKeyboard(newRow.locator('input').first(), 'Retainer support', '__tallyNewLineDescriptionInput');
   await expect(newRow.locator('input').first()).toHaveValue('Retainer support');
+});
+
+test('invoice line grid keeps aligned desktop columns and visible mobile labels', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/invoices/inv-1007');
+
+  const columns = await page.locator('article.line-row').evaluateAll((rows) => rows.map((row) => {
+    const inputs = row.querySelectorAll('input');
+    const total = row.querySelector('strong');
+    return {
+      qtyLeft: inputs[1].getBoundingClientRect().left,
+      unitLeft: inputs[2].getBoundingClientRect().left,
+      totalLeft: total.getBoundingClientRect().left,
+      totalRight: total.getBoundingClientRect().right,
+    };
+  }));
+  for (const key of ['qtyLeft', 'unitLeft', 'totalLeft', 'totalRight']) {
+    const values = columns.map((column) => column[key]);
+    expect(Math.max(...values) - Math.min(...values)).toBeLessThanOrEqual(1);
+  }
+
+  await page.setViewportSize({ width: 390, height: 900 });
+  await page.reload();
+  await expect(page.locator('.line-header')).toBeHidden();
+
+  const firstLine = page.locator('article.line-row').first();
+  await expect(firstLine.getByText('Description')).toBeVisible();
+  await expect(firstLine.getByText('Qty')).toBeVisible();
+  await expect(firstLine.getByText('Unit price')).toBeVisible();
+  await expect(firstLine.getByText('Line total')).toBeVisible();
 });
 
 test('unknown route renders fallback and keyboard focus works', async ({ page }) => {

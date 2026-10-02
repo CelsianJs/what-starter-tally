@@ -27,6 +27,7 @@ export default function Build() {
         <h2>Build journal</h2>
         <p>Line editing originally risked non-finite totals, so calculations route through <code>finiteMoney</code>. Static hosting also needed generated detail aliases instead of only index shells.</p>
         <p>A later keyboard regression showed that immutable line replacement can remount raw mapped rows while someone is typing. The invoice editor now renders lines with keyed <code>{'<For>'}</code> accessors, so <code>line().quantity</code> and friends update without replacing the focused input.</p>
+        <p>The line editor also needed a fixed total track. Currency widths made independent row grids drift on desktop, and the mobile cards needed their own visible labels instead of relying on a detached header.</p>
       </section>
       <section>
         <h2>Problem → fix → proof</h2>
@@ -34,6 +35,7 @@ export default function Build() {
         <p><strong>Ledger labeling:</strong> a review caught "Tax included in preview total" showing the invoice total. The home ledger now renders subtotal, tax, and total-including-tax as separate rows so the math is inspectable.</p>
         <p><strong>Editor density:</strong> the line editor uses one column header and screen-reader-only per-input labels. That keeps fixed columns aligned without removing native labelled controls.</p>
         <p><strong>List identity:</strong> continuous edit tests mark the active quantity, description, unit price, and new-line inputs, then use select-all/backspace/type. The same DOM node must stay focused while totals recalculate.</p>
+        <p><strong>Responsive labels:</strong> desktop browser tests measure every row's quantity, unit price, and total columns at 1440px. Mobile tests hide the header and require Description, Qty, Unit price, and Line total labels inside the row card.</p>
         <p><strong>Routeable records:</strong> client, invoice, and receipt URLs are generated from <code>src/data/invoices.js</code>, then checked by Playwright as direct page loads.</p>
         <p><strong>Visual direction:</strong> the homepage was changed from a rounded hero into a working ledger sheet plus client ledger, so the invoice rows appear before generic explanation.</p>
         <p><strong>Upload size:</strong> the Vura CLI pack check now produces an archive around 22.0 KiB because static synthesis reads files instead of a hand-written manifest.</p>
