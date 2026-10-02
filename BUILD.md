@@ -41,6 +41,7 @@ After removing the unused `@celsian/vura-core` path, the Vura CLI archive check 
 - The printable receipt route reads from the same invoice signal as the editor, so edits made before navigation are visible without a reload.
 - A design review caught misleading tax copy and scattered invoice actions. The ledger now separates subtotal, tax, and total-including-tax; invoice detail actions use one right-aligned row in receipt/save/export order.
 - The line editor now has a single column header row and screen-reader-only per-row labels. That keeps the desk compact while preserving labelled native inputs for assistive tech and browser tests.
+- Continuous keyboard editing exposed a list identity trap: `updateLine()` intentionally replaces a line object immutably, so raw row maps can replace the focused input while the user types. The editor now uses keyed `<For>` accessor rows so the row DOM is preserved while `line().quantity`, `line().unitPrice`, and `line().description` update.
 
 ## Problem → fix → proof
 
@@ -49,6 +50,7 @@ After removing the unused `@celsian/vura-core` path, the Vura CLI archive check 
 - Problem: storage may be denied. Fix: persistence catches write errors and keeps the edited draft alive for the current session. Proof: the browser suite forces storage writes to throw and still verifies edited totals.
 - Problem: the homepage labeled the total as if it were the tax line, and the detail editor repeated labels in every row. Fix: split subtotal/tax/total labels and add a fixed editor header with hidden per-input labels. Proof: Playwright asserts the explicit tax/total text and the "Line total" header before editing.
 - Problem: manual static manifests and invalid config fields can push a client-only starter down the wrong Vura upload path. Fix: omit manual manifests, keep valid `(.*)` matchers, and let Vura synthesize static routing from files. Proof: `parseVuraJson()` accepts the config, no `dist/manifest.json` remains after build, and the Vura CLI archive is about 22.0 KiB.
+- Problem: quantity, unit price, and description edits must support select-all/backspace/type without dropping focus. Fix: `src/pages/InvoiceDetail.jsx` renders invoice lines with keyed `<For>` accessors instead of raw line objects, which lets immutable store updates refresh the accessor without replacing the row node. Proof: Playwright marks the focused DOM node, clears and types into quantity, description, unit price, and a newly added line, then asserts the same node remains `document.activeElement` and totals update.
 
 ## Verification
 

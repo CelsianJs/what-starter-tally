@@ -48,6 +48,7 @@
 ## Accessibility
 - Target standard: WCAG 2.1 AA-minded implementation
 - Keyboard/focus behavior: visible focus rings, native inputs/selects/buttons, keyboard-reachable editor and reset/export controls
+- Keyboard editing contract: invoice line inputs must keep the same focused DOM node through select-all/backspace/type edits, including after a new line is added
 - Contrast/readability: dark graphite on off-white, mint focus treatment with text contrast
 - Screen-reader semantics: one `h1` per route, labelled quantity/unit inputs, visible column headers with screen-reader-only row labels, named totals region
 - Reduced motion and sensory considerations: `prefers-reduced-motion` disables animations and transitions
@@ -74,6 +75,7 @@
 - Framework/styling system: What Framework 0.13.10, what-compiler 0.13.10, Vite 6.4.3, plain CSS
 - Design-token constraints: CSS custom properties in `src/styles.css`
 - Performance constraints: small static data, computed totals, no external assets or runtime network
+- State/list constraints: invoice line updates are immutable, so editable line rows use keyed What `<For>` accessors to preserve input DOM identity while row data changes
 - Compatibility constraints: modern browsers supported by Vite output and What router
 - Test/screenshot expectations: Vitest calculation tests plus Playwright desktop/mobile flows, direct routes, storage-denied behavior, export, 404, and screenshots
 

@@ -71,6 +71,44 @@ test('storage-denied browsers keep session edits without crashing', async ({ pag
   await expect(page.getByText('Total $3,895.15')).toBeVisible();
 });
 
+test('invoice line editing preserves focus and DOM identity during continuous typing', async ({ page }) => {
+  async function replaceWithKeyboard(locator, value, key) {
+    await locator.evaluate((node, marker) => {
+      window[marker] = node;
+    }, key);
+    await locator.focus();
+    await page.keyboard.press('ControlOrMeta+A');
+    await page.keyboard.press('Backspace');
+    await expect(locator).toBeFocused();
+    expect(await locator.evaluate((node, marker) => node === window[marker], key)).toBe(true);
+    expect(await page.evaluate((marker) => document.activeElement === window[marker], key)).toBe(true);
+    await page.keyboard.type(value);
+    await expect(locator).toHaveValue(value);
+    await expect(locator).toBeFocused();
+    expect(await locator.evaluate((node, marker) => node === window[marker], key)).toBe(true);
+    expect(await page.evaluate((marker) => document.activeElement === window[marker], key)).toBe(true);
+  }
+
+  await page.goto('/invoices/inv-1007');
+
+  const landingRow = page.locator('.line-row').nth(2);
+  await replaceWithKeyboard(landingRow.locator('input').nth(1), '2', '__tallyQtyInput');
+  await expect(page.getByText('Total $3,027.15')).toBeVisible();
+
+  const messagingRow = page.locator('.line-row').nth(1);
+  await replaceWithKeyboard(messagingRow.locator('input').first(), 'Messaging sprint', '__tallyDescriptionInput');
+  await expect(messagingRow.locator('input').first()).toHaveValue('Messaging sprint');
+
+  const qaRow = page.locator('.line-row').nth(3);
+  await replaceWithKeyboard(qaRow.locator('input').nth(2), '150', '__tallyUnitPriceInput');
+  await expect(page.getByText('Total $3,157.35')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Add line' }).click();
+  const newRow = page.locator('.line-row').last();
+  await replaceWithKeyboard(newRow.locator('input').first(), 'Retainer support', '__tallyNewLineDescriptionInput');
+  await expect(newRow.locator('input').first()).toHaveValue('Retainer support');
+});
+
 test('unknown route renders fallback and keyboard focus works', async ({ page }) => {
   await page.goto('/not-a-draft');
   await expect(page.getByRole('heading', { name: /not filed/i })).toBeVisible();

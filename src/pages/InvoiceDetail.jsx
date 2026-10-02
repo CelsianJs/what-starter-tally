@@ -1,3 +1,4 @@
+import { For } from 'what-framework';
 import { Link, route } from 'what-framework/router';
 import { calculateInvoice, clientById, currency } from '../data/invoices.js';
 import { addLine, exportInvoice, invoices, markSaved, updateLine } from '../state/workspace.js';
@@ -46,23 +47,25 @@ export default function InvoiceDetail() {
           <span>Unit price</span>
           <span>Line total</span>
         </div>
-        {invoice().lines.map((line) => (
-          <article class="line-row">
-            <label>
-              <span class="sr-only">Description</span>
-              <input value={line.description} onInput={(event) => updateLine(invoice().id, line.id, { description: event.target.value })} />
-            </label>
-            <label>
-              <span class="sr-only">Qty</span>
-              <input aria-label={`${line.description} quantity`} type="number" min="0" step="0.25" value={line.quantity} onInput={(event) => updateLine(invoice().id, line.id, { quantity: event.target.value })} />
-            </label>
-            <label>
-              <span class="sr-only">Unit price</span>
-              <input aria-label={`${line.description} unit price`} type="number" min="0" step="1" value={line.unitPrice} onInput={(event) => updateLine(invoice().id, line.id, { unitPrice: event.target.value })} />
-            </label>
-            <strong>{currency(Number(line.quantity) * Number(line.unitPrice))}</strong>
-          </article>
-        ))}
+        <For each={() => invoice().lines} key={(line) => line.id}>
+          {(line) => (
+            <article class="line-row">
+              <label>
+                <span class="sr-only">Description</span>
+                <input value={line().description} onInput={(event) => updateLine(invoice().id, line().id, { description: event.target.value })} />
+              </label>
+              <label>
+                <span class="sr-only">Qty</span>
+                <input aria-label={`${line().description} quantity`} type="number" min="0" step="0.25" value={line().quantity} onInput={(event) => updateLine(invoice().id, line().id, { quantity: event.target.value })} />
+              </label>
+              <label>
+                <span class="sr-only">Unit price</span>
+                <input aria-label={`${line().description} unit price`} type="number" min="0" step="1" value={line().unitPrice} onInput={(event) => updateLine(invoice().id, line().id, { unitPrice: event.target.value })} />
+              </label>
+              <strong>{() => currency(Number(line().quantity) * Number(line().unitPrice))}</strong>
+            </article>
+          )}
+        </For>
       </div>
       <button class="button ghost" onClick={() => addLine(invoice().id)}>Add line</button>
       <aside class="totals-card" aria-label="Invoice totals">
