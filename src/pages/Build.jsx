@@ -30,6 +30,8 @@ export default function Build() {
       <section>
         <h2>Problem → fix → proof</h2>
         <p><strong>Finite totals:</strong> <code>calculateInvoice()</code> uses <code>finiteMoney()</code> before subtotal, tax, and total math. Unit tests and browser line edits verify the displayed total.</p>
+        <p><strong>Ledger labeling:</strong> a review caught "Tax included in preview total" showing the invoice total. The home ledger now renders subtotal, tax, and total-including-tax as separate rows so the math is inspectable.</p>
+        <p><strong>Editor density:</strong> the line editor uses one column header and screen-reader-only per-input labels. That keeps fixed columns aligned without removing native labelled controls.</p>
         <p><strong>Routeable records:</strong> client, invoice, and receipt URLs are generated from <code>src/data/invoices.js</code>, then checked by Playwright as direct page loads.</p>
         <p><strong>Visual direction:</strong> the homepage was changed from a rounded hero into a working ledger sheet plus client ledger, so the invoice rows appear before generic explanation.</p>
         <p><strong>Upload size:</strong> the Vura CLI pack check now produces an archive around 22.0 KiB because static synthesis reads files instead of a hand-written manifest.</p>

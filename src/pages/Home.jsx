@@ -31,7 +31,11 @@ export default function Home() {
           </div>
         ))}
         <div class="ledger-total">
-          <span>Tax {currentInvoice().taxRate}% included in preview total</span>
+          <span>Subtotal</span>
+          <strong>{currency(currentInvoice().totals.subtotal)}</strong>
+          <span>Tax {currentInvoice().taxRate}%</span>
+          <strong>{currency(currentInvoice().totals.tax)}</strong>
+          <span>Total incl. {currentInvoice().taxRate}% tax</span>
           <strong>{currency(currentInvoice().totals.total)}</strong>
         </div>
       </article>

@@ -20,9 +20,14 @@ test.afterEach(async ({ page }) => {
 test('edits a draft, saves it, exports JSON, opens receipt, and screenshots', async ({ page }, testInfo) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: /draft, total, and print/i })).toBeVisible();
+  await expect(page.getByText('Subtotal')).toBeVisible();
+  await expect(page.getByText('Tax 8.5%')).toBeVisible();
+  await expect(page.getByText('Total incl. 8.5% tax')).toBeVisible();
 
   await page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'Drafts', exact: true }).click();
   await page.getByRole('link', { name: 'October launch system' }).click();
+  await expect(page.locator('.action-row').getByRole('link', { name: 'Receipt view' })).toBeVisible();
+  await expect(page.locator('.line-header').getByText('Line total')).toBeVisible();
   await page.getByLabel('Landing page production quantity').fill('4');
   await expect(page.getByText('Total $4,502.75')).toBeVisible();
   await page.getByRole('button', { name: 'Save draft' }).click();

@@ -39,12 +39,15 @@ After removing the unused `@celsian/vura-core` path, the Vura CLI archive check 
 - JSON export is intentionally local. The app does not send invoices, process payments, or claim tax/compliance coverage.
 - The first homepage pass looked too much like the other starters. The fix was to make `src/pages/Home.jsx` a ledger desk with invoice rows and client tabs in the first viewport.
 - The printable receipt route reads from the same invoice signal as the editor, so edits made before navigation are visible without a reload.
+- A design review caught misleading tax copy and scattered invoice actions. The ledger now separates subtotal, tax, and total-including-tax; invoice detail actions use one right-aligned row in receipt/save/export order.
+- The line editor now has a single column header row and screen-reader-only per-row labels. That keeps the desk compact while preserving labelled native inputs for assistive tech and browser tests.
 
 ## Problem → fix → proof
 
 - Problem: invoice math must never leak `NaN` while a user edits a number field. Fix: `finiteMoney()` clamps non-finite and negative values before subtotal/tax/total calculations. Proof: Vitest covers finite calculations and Playwright edits a line to verify the new total.
 - Problem: direct client, invoice, and receipt paths need real files on static hosting. Fix: route aliases are generated from the bundled client/invoice fixtures. Proof: `npm run build` prints `static aliases OK: 13 routes plus 404` and Playwright opens every generated detail route.
 - Problem: storage may be denied. Fix: persistence catches write errors and keeps the edited draft alive for the current session. Proof: the browser suite forces storage writes to throw and still verifies edited totals.
+- Problem: the homepage labeled the total as if it were the tax line, and the detail editor repeated labels in every row. Fix: split subtotal/tax/total labels and add a fixed editor header with hidden per-input labels. Proof: Playwright asserts the explicit tax/total text and the "Line total" header before editing.
 - Problem: manual static manifests and invalid config fields can push a client-only starter down the wrong Vura upload path. Fix: omit manual manifests, keep valid `(.*)` matchers, and let Vura synthesize static routing from files. Proof: `parseVuraJson()` accepts the config, no `dist/manifest.json` remains after build, and the Vura CLI archive is about 22.0 KiB.
 
 ## Verification

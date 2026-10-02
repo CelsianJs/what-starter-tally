@@ -34,24 +34,30 @@ export default function InvoiceDetail() {
           <p>No payments, compliance workflow, or external billing system is connected.</p>
         </div>
         <div class="action-row">
+          <Link class="button primary" href={`/receipt/${invoice().id}`}>Receipt view</Link>
           <button class="button" onClick={() => markSaved(invoice().id)}>Save draft</button>
           <button class="button" onClick={downloadJson}>Export JSON</button>
-          <Link class="button primary" href={`/receipt/${invoice().id}`}>Receipt view</Link>
         </div>
       </div>
       <div class="line-editor" aria-label="Invoice lines">
+        <div class="line-row line-header" aria-hidden="true">
+          <span>Description</span>
+          <span>Qty</span>
+          <span>Unit price</span>
+          <span>Line total</span>
+        </div>
         {invoice().lines.map((line) => (
           <article class="line-row">
             <label>
-              <span>Description</span>
+              <span class="sr-only">Description</span>
               <input value={line.description} onInput={(event) => updateLine(invoice().id, line.id, { description: event.target.value })} />
             </label>
             <label>
-              <span>Qty</span>
+              <span class="sr-only">Qty</span>
               <input aria-label={`${line.description} quantity`} type="number" min="0" step="0.25" value={line.quantity} onInput={(event) => updateLine(invoice().id, line.id, { quantity: event.target.value })} />
             </label>
             <label>
-              <span>Unit price</span>
+              <span class="sr-only">Unit price</span>
               <input aria-label={`${line.description} unit price`} type="number" min="0" step="1" value={line.unitPrice} onInput={(event) => updateLine(invoice().id, line.id, { unitPrice: event.target.value })} />
             </label>
             <strong>{currency(Number(line.quantity) * Number(line.unitPrice))}</strong>

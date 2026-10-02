@@ -34,14 +34,14 @@
 ## Visual language
 - Color: graphite surfaces, mint actions, cool off-white panels
 - Typography: system sans with heavy condensed-feeling headings through weight and tracking
-- Spacing/layout rhythm: the homepage is a working desk, not a landing page: invoice rows, totals, and client ledger context appear immediately above the fold
+- Spacing/layout rhythm: the homepage is a compact working desk, not a landing page: invoice rows, explicit subtotal/tax/total math, and client ledger context appear immediately above the fold
 - Shape/radius/elevation: ledger sheets, squared panels, tabular rows, restrained shadows, crisp borders; avoid repeating the same rounded hero composition as other starters
 - Motion: short page entrance and hover lift with reduced-motion fallback
 - Imagery/iconography: no external images; visual identity comes from tables, totals, status stamps, and accent rule work
 
 ## Components
 - Existing components to reuse: standalone starter
-- New/changed components: shell, metric cards, client cards, invoice rows, line editor, totals card, receipt view
+- New/changed components: shell, metric cards, client cards, invoice rows, fixed-column line editor, totals card, receipt view
 - Variants and states: empty filters, saved draft, storage denied, unknown client/invoice, export prepared, mobile stack
 - Token/component ownership: `src/styles.css` owns tokens; route pages own product-specific layout
 
@@ -49,7 +49,7 @@
 - Target standard: WCAG 2.1 AA-minded implementation
 - Keyboard/focus behavior: visible focus rings, native inputs/selects/buttons, keyboard-reachable editor and reset/export controls
 - Contrast/readability: dark graphite on off-white, mint focus treatment with text contrast
-- Screen-reader semantics: one `h1` per route, labelled quantity/unit inputs, named totals region
+- Screen-reader semantics: one `h1` per route, labelled quantity/unit inputs, visible column headers with screen-reader-only row labels, named totals region
 - Reduced motion and sensory considerations: `prefers-reduced-motion` disables animations and transitions
 
 ## Responsive behavior
