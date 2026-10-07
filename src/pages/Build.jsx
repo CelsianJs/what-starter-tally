@@ -4,6 +4,11 @@ export default function Build() {
       <p class="eyebrow">Agent reference</p>
       <h1>How Tally is built.</h1>
       <section>
+        <h2>Local draft recovery</h2>
+        <p>Issued/due/status context sits beside actions. Removing a line updates the same immutable invoice state, returns the invoice to draft, and can safely leave zero rows. The keyed For fallback explains the empty draft; Add line restores an editable row. Existing focus and fixed-column tests protect the editor.</p>
+        <pre>{"lines: invoice.lines.filter((line) => line.id !== lineId),"}</pre>
+      </section>
+      <section>
         <h2>Signals</h2>
         <p><code>src/state/workspace.js</code> keeps invoice drafts, client filters, save status, and export status in module-scoped signals.</p>
       </section>
@@ -32,6 +37,7 @@ export default function Build() {
       <section>
         <h2>Problem → fix → proof</h2>
         <p><strong>Finite totals:</strong> <code>calculateInvoice()</code> uses <code>finiteMoney()</code> before subtotal, tax, and total math. Unit tests and browser line edits verify the displayed total.</p>
+        <p><strong>Matching operands:</strong> line amounts also clamp each operand before multiplication. Two negative edits must not display a positive line amount while the invoice subtotal treats them as zero; a browser regression pins that boundary.</p>
         <p><strong>Ledger labeling:</strong> a review caught "Tax included in preview total" showing the invoice total. The home ledger now renders subtotal, tax, and total-including-tax as separate rows so the math is inspectable.</p>
         <p><strong>Editor density:</strong> the line editor uses one column header and screen-reader-only per-input labels. That keeps fixed columns aligned without removing native labelled controls.</p>
         <p><strong>List identity:</strong> continuous edit tests mark the active quantity, description, unit price, and new-line inputs, then use select-all/backspace/type. The same DOM node must stay focused while totals recalculate.</p>

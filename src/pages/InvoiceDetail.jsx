@@ -1,10 +1,11 @@
 import { For } from 'what-framework';
 import { Link, route } from 'what-framework/router';
-import { calculateInvoice, clientById, currency } from '../data/invoices.js';
-import { addLine, exportInvoice, invoices, markSaved, updateLine } from '../state/workspace.js';
+import { calculateInvoice, clientById, currency, finiteMoney } from '../data/invoices.js';
+import { addLine, exportInvoice, invoices, markSaved, removeLine, updateLine } from '../state/workspace.js';
 
 export default function InvoiceDetail() {
-  const invoice = () => invoices().find((item) => item.id === route.params.id);
+  const invoiceId = route.params.id;
+  const invoice = () => invoices().find((item) => item.id === invoiceId);
   if (!invoice()) {
     return (
       <section class="empty-state page-enter">
@@ -32,6 +33,7 @@ export default function InvoiceDetail() {
         <div>
           <p class="eyebrow">{client().name} · {invoice().id}</p>
           <h1>{invoice().title}</h1>
+          <div class="draft-context" aria-label="Draft context"><span>Issued {invoice().issued}</span><span>Due {invoice().due}</span><strong>{invoice().status === 'saved' ? 'Saved draft' : 'Draft · unsent'}</strong></div>
           <p>No payments, compliance workflow, or external billing system is connected.</p>
         </div>
         <div class="action-row">
@@ -47,7 +49,7 @@ export default function InvoiceDetail() {
           <span>Unit price</span>
           <span>Line total</span>
         </div>
-        <For each={() => invoice().lines} key={(line) => line.id}>
+        <For each={() => invoice().lines} key={(line) => line.id} fallback={<p class="empty-state">No invoice lines yet. Add a line to start this local draft.</p>}>
           {(line) => (
             <article class="line-row">
               <label>
@@ -62,7 +64,7 @@ export default function InvoiceDetail() {
                 <span class="sr-only">Unit price</span>
               <input aria-label={`${line().description} unit price`} type="number" min="0" step="1" value={line().unitPrice} onInput={(event) => updateLine(invoice().id, line().id, { unitPrice: event.target.value })} />
             </label>
-            <strong><span class="sr-only">Line total</span>{() => currency(Number(line().quantity) * Number(line().unitPrice))}</strong>
+            <div class="line-total"><strong><span class="sr-only">Line total</span>{() => currency(finiteMoney(line().quantity) * finiteMoney(line().unitPrice))}</strong><button class="line-remove" aria-label={() => `Remove ${line().description || 'untitled line'}`} onClick={() => removeLine(invoice().id, line().id)}>Remove line</button></div>
           </article>
           )}
         </For>

@@ -63,6 +63,24 @@ test('every generated detail route is directly addressable', async ({ page }) =>
   }
 });
 
+test('draft context and accidental line removal stay local and recover from an empty invoice', async ({ page }) => {
+  await page.goto('/invoices/inv-1007');
+  await expect(page.getByText('Issued 2026-10-01')).toBeVisible();
+  await expect(page.getByText('Due 2026-10-15')).toBeVisible();
+  await page.getByRole('button', { name: 'Add line' }).click();
+  await page.getByRole('button', { name: 'Remove New service' }).click();
+  await expect(page.locator('article.line-row')).toHaveCount(3);
+  await expect(page.getByText('Total $3,764.95')).toBeVisible();
+  for (const line of ['Messaging workshop', 'Landing page production', 'Launch QA pass']) {
+    await page.getByRole('button', { name: `Remove ${line}`, exact: true }).click();
+  }
+  await expect(page.getByText('No invoice lines yet.')).toBeVisible();
+  await expect(page.getByText('Total $0.00', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Add line' }).click();
+  await expect(page.getByLabel('Description', { exact: true })).toHaveValue('New service');
+  await expect(page.getByText('Total $135.63')).toBeVisible();
+});
+
 test('storage-denied browsers keep session edits without crashing', async ({ page }) => {
   await page.addInitScript(() => {
     Storage.prototype.setItem = () => {
@@ -73,6 +91,14 @@ test('storage-denied browsers keep session edits without crashing', async ({ pag
   await page.getByLabel('Launch QA pass quantity').fill('5');
   await expect(page.getByText(/not saved in this browser/i)).toBeVisible();
   await expect(page.getByText('Total $3,895.15')).toBeVisible();
+});
+
+test('line amounts use the same nonnegative operands as invoice totals', async ({ page }) => {
+  await page.goto('/invoices/inv-1007');
+  await page.getByLabel('Messaging workshop quantity').fill('-2');
+  await page.getByLabel('Messaging workshop unit price').fill('-3');
+  await expect(page.locator('article.line-row').first().locator('.line-total strong')).toHaveText(/\$0.00/);
+  await expect(page.getByText('Subtotal $2,520.00')).toBeVisible();
 });
 
 test('invoice line editing preserves focus and DOM identity during continuous typing', async ({ page }) => {
