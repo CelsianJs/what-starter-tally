@@ -1,5 +1,22 @@
 # Build notes for agents
 
+## Recoverable invoice lines and draft context
+
+Line display uses the same nonnegative operands as invoice calculations: `currency(finiteMoney(line().quantity) * finiteMoney(line().unitPrice))`. Clamping only the product was incorrect when two negative operands multiplied into a positive number. The browser regression enters both negatives and requires a zero line amount, matching the subtotal.
+
+Invoice detail shows issued date, due date, and local draft status. Remove line works on the same immutable invoice state as editing; removing the last line reveals an empty state and finite zero totals, and Add line starts again. The total element still fills its fixed-width track, so removal controls do not reintroduce drifting currency columns. Keyed For accessors continue to preserve focused editor nodes.
+
+The relevant source pattern is:
+
+```js
+lines: invoice.lines.filter((line) => line.id !== lineId),
+```
+
+Browser coverage adds/removes an accidental row, removes all rows, requires zero totals, then adds a fresh row; existing focus, desktop column alignment, mobile labels, export, receipt, denied storage, and route tests remain.
+
+Keep the product anonymous and local/synthetic. These workflow improvements do not add authentication, collaboration, payments, ingestion, or durable server storage.
+
+
 Tally is intentionally small enough for agents to inspect end-to-end, but it uses the same patterns a larger What Framework SaaS app would use.
 
 ## What it demonstrates

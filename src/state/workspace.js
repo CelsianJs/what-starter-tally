@@ -86,6 +86,14 @@ export function addLine(invoiceId) {
   }));
 }
 
+export function removeLine(invoiceId, lineId) {
+  replaceInvoice(invoiceId, (invoice) => ({
+    ...invoice,
+    lines: invoice.lines.filter((line) => line.id !== lineId),
+    status: 'draft',
+  }));
+}
+
 export function markSaved(invoiceId) {
   replaceInvoice(invoiceId, (invoice) => ({ ...invoice, status: 'saved' }));
 }

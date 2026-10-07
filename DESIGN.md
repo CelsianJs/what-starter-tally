@@ -2,7 +2,7 @@
 
 ## Source of truth
 - Status: Active
-- Last refreshed: 2026-10-01
+- Last refreshed: 2026-10-07
 - Primary product surfaces: overview, client ledger, client detail, draft queue, invoice editor, receipt preview, build notes
 - Evidence reviewed: What Framework routing/state examples, current getting-started guidance, and the Vura deploy script pattern used by these starters
 
@@ -64,7 +64,7 @@
 - Empty: filtered draft queue has explicit copy
 - Error: malformed stored JSON resets to seed drafts; storage denied displays session-only status
 - Success: save/export status and totals update immediately
-- Disabled: no disabled controls are needed; invalid money input is treated as zero in totals
+- Disabled: no disabled controls are needed; invalid or negative money operands are treated as zero in both line and invoice totals. An empty draft can always add a line.
 - Offline/slow network: app is static and local once loaded
 
 ## Content voice
@@ -81,5 +81,12 @@
 - Compatibility constraints: modern browsers supported by Vite output and What router
 - Test/screenshot expectations: Vitest calculation tests plus Playwright desktop/mobile flows, direct routes, storage-denied behavior, export, 404, and screenshots
 
+## Operational refinement
+
+Invoice detail shows issued date, due date, and local draft status. Remove line works on the same immutable invoice state as editing; removing the last line reveals an empty state and finite zero totals, and Add line starts again. The total element still fills its fixed-width track, so removal controls do not reintroduce drifting currency columns. Keyed For accessors continue to preserve focused editor nodes.
+
+Validation contract: Browser coverage adds/removes an accidental row, removes all rows, requires zero totals, then adds a fresh row; existing focus, desktop column alignment, mobile labels, export, receipt, denied storage, and route tests remain.
+
 ## Open questions
+
 - [ ] Choose the final Vura subdomain during deployment.
