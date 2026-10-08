@@ -2,7 +2,7 @@
 
 ## Source of truth
 - Status: Active
-- Last refreshed: 2026-10-07
+- Last refreshed: 2026-10-08
 - Primary product surfaces: overview, client ledger, client detail, draft queue, invoice editor, receipt preview, build notes
 - Evidence reviewed: What Framework routing/state examples, current getting-started guidance, and the Vura deploy script pattern used by these starters
 
@@ -33,10 +33,10 @@
 
 ## Visual language
 - Color: graphite surfaces, mint actions, cool off-white panels
-- Typography: system sans with heavy condensed-feeling headings through weight and tracking
+- Typography: Avenir Next/Segoe UI sans with bounded32px page headings and 24px subsection headings
 - Spacing/layout rhythm: the homepage is a compact working desk, not a landing page: invoice rows, explicit subtotal/tax/total math, and client ledger context appear immediately above the fold
-- Shape/radius/elevation: ledger sheets, squared panels, tabular rows, restrained shadows, crisp borders; avoid repeating the same rounded hero composition as other starters
-- Motion: short page entrance and hover lift with reduced-motion fallback
+- Shape/radius/elevation: ledger sheets, squared panels, tabular rows, no decorative shadows, crisp borders; avoid repeating the same rounded hero composition as other starters
+- Motion: short page entrance and quiet hover feedback with reduced-motion fallback
 - Imagery/iconography: no external images; visual identity comes from tables, totals, status stamps, and accent rule work
 
 ## Components
@@ -57,7 +57,7 @@
 ## Responsive behavior
 - Supported breakpoints/devices: 360px mobile through large desktop
 - Layout adaptations: nav wraps, metrics stack, line editor collapses to one column, receipt remains readable
-- Touch/hover differences: hover affordances have focus equivalents; tap targets above 40px
+- Touch/hover differences: hover affordances have focus equivalents; 14px controls with at least44px tap targets
 
 ## Interaction states
 - Loading: not applicable for static local data
@@ -90,3 +90,8 @@ Validation contract: Browser coverage adds/removes an accidental row, removes al
 ## Open questions
 
 - [ ] Choose the final Vura subdomain during deployment.
+
+
+## Modern interface consistency
+
+The primary workspace, detail views and build guide share a bounded sans-serif hierarchy, natural-case 14px chrome, 44px targets and quiet surfaces. Do not reintroduce poster headings, decorative background grids, heavy shadows or pill-shaped navigation. Brand accents and functional visualizations remain distinct; operational information takes precedence over decoration.
